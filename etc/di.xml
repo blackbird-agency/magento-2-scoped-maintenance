@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Blackbird\ScopedMaintenance\Api\Service\MaintenanceInterface"
+                type="Blackbird\ScopedMaintenance\Service\Maintenance"/>
+    <type name="Magento\Framework\App\MaintenanceMode">
+        <plugin name="blackbird_scoped_maintenance" type="Blackbird\ScopedMaintenance\Plugin\ScopedMaintenance"/>
+    </type>
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="blackbird_scoped_maintenance_enable" xsi:type="object">Blackbird\ScopedMaintenance\Console\Command\MaintenanceEnableScope</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Backend\Console\Command\MaintenanceStatusCommand">
+        <plugin name="add_store_status"
+                type="Blackbird\ScopedMaintenance\Plugin\Command\AddStoreStatus"
+                sortOrder="10"/>
+    </type>
+    <type name="Magento\Backend\Console\Command\MaintenanceDisableCommand">
+        <plugin name="RemoveStoreFlag"
+                type="Blackbird\ScopedMaintenance\Plugin\Command\RemoveStoreFlag"
+                sortOrder="10"/>
+    </type>
+    <type name="Magento\Backend\Console\Command\MaintenanceEnableCommand">
+        <plugin name="RemoveStoreFlag"
+                type="Blackbird\ScopedMaintenance\Plugin\Command\RemoveStoreFlag"
+                sortOrder="10"/>
+    </type>
+    <!-- Use  Proxy to limit performance impact when maintenance is disabled-->
+    <type name="Blackbird\ScopedMaintenance\Plugin\ScopedMaintenance">
+        <arguments>
+            <argument name="maintenance" xsi:type="object">Blackbird\ScopedMaintenance\Api\Service\MaintenanceInterface\Proxy</argument>
+            <argument name="storeManager" xsi:type="object">Magento\Store\Model\StoreManagerInterface\Proxy</argument>
+            <argument name="request" xsi:type="object">Magento\Framework\HTTP\PhpEnvironment\Request\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Blackbird\ScopedMaintenance\Plugin\Command\AddStoreStatus">
+        <arguments>
+            <argument name="maintenance" xsi:type="object">Blackbird\ScopedMaintenance\Api\Service\MaintenanceInterface\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Blackbird\ScopedMaintenance\Plugin\Command\RemoveStoreFlag">
+        <arguments>
+            <argument name="maintenance" xsi:type="object">Blackbird\ScopedMaintenance\Service\Maintenance\Proxy</argument>
+        </arguments>
+    </type>
+</config>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="after.body.start">
+            <block class="Blackbird\ScopedMaintenance\Block\StoreCacheTag" name="register.store.cache.tag"
+                   template="Blackbird_ScopedMaintenance::empty.phtml"/>
+        </referenceContainer>
+    </body>
+</page>
