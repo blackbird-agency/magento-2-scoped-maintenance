@@ -12,8 +12,6 @@ Key functionality includes:
 
 The source code is available at the [GitHub repository](https://github.com/blackbird-agency/magento-2-scoped-maintenance).
 
-![Illustration](illustration.png)
-
 ---
 
 ## Setup
@@ -45,7 +43,7 @@ Go to your Magento root directory, then run the following Magento command:
 #### Scoped Maintenance
 
 The Scoped Maintenance module introduces the ability to enable maintenance mode for specific Magento stores, instead of forcing it globally across all stores. You can target individual stores or groups of store IDs to restrict access while ensuring other stores remain fully operational.
-This module add a .maintenance.store file to store the list of stores in maintenance.
+This module add a `.maintenance.store` file to store the list of stores in maintenance.
 
 #### IP Whitelisting
 
@@ -55,7 +53,8 @@ The native ip whitelist of the maintenance is kept.
 #### Automatic Cache Purging
 
 When maintenance mode is activated or deactivated for specific stores, the module handles purging the full-page cache for the affected stores to ensure consistency and immediate effect of the maintenance status.
-A special cache tag is added to all pages to specify the store_id and clean only the full page cache of specified stores.
+A special cache tag `store_{$id}` is added to all pages to specify the store_id and clean only the full page cache of specified stores.
+
 ---
 
 ## Usage
@@ -93,12 +92,6 @@ The module includes the ability to check whether maintenance mode is enabled for
     bin/magento maintenance:status
 ```
 
-## Developer Notes
-
-### Cache Behavior
-
-When enabling or disabling maintenance mode for specific stores, the module will automatically purge cache tags related to the affected stores using Magento's full-page cache system. This ensures that the maintenance status applies immediately even if cached pages exist.
-
 ---
 
 ## Support
@@ -119,7 +112,7 @@ For further information, contact us:
 
 ## Authors
 
-- **Blackbird Team** - *Contributor* - [They're awesome!](https://github.com/blackbird-agency)
+- **Blackbird Team** - *Maintainer* - [They're awesome!](https://github.com/blackbird-agency)
 
 ---
 
