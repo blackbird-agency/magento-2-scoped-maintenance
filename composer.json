@@ -1,6 +1,6 @@
 {
     "name": "blackbird/scoped-maintenance",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "This module allows you to enable maintenance mode for specific stores in a Magento instance while leaving others accessible.",
     "type": "magento2-module",
     "require": {

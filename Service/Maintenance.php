@@ -7,6 +7,7 @@ use Magento\Framework\App\MaintenanceMode;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\HTTP\PhpEnvironment\Request;
 
 class Maintenance implements MaintenanceInterface
 {
@@ -35,16 +36,28 @@ class Maintenance implements MaintenanceInterface
     protected $storeManager;
 
     /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * @var bool[]
+     */
+    protected $statuses = [];
+
+    /**
      * @param Filesystem $filesystem
      * @param MaintenanceMode $maintenanceMode
      * @param StoreManagerInterface $storeManager
+     * @param Request $request
      * @throws FileSystemException
      */
-    public function __construct(Filesystem $filesystem, MaintenanceMode $maintenanceMode, StoreManagerInterface $storeManager)
+    public function __construct(Filesystem $filesystem, MaintenanceMode $maintenanceMode, StoreManagerInterface $storeManager, Request $request)
     {
         $this->flagDir = $filesystem->getDirectoryWrite(MaintenanceMode::FLAG_DIR);
         $this->maintenanceMode = $maintenanceMode;
         $this->storeManager = $storeManager;
+        $this->request = $request;
     }
 
 
@@ -67,11 +80,26 @@ class Maintenance implements MaintenanceInterface
      */
     public function isMaintenanceEnabledForStore(int $storeId): bool
     {
-        if (!$this->flagDir->isExist(MaintenanceMode::FLAG_FILENAME)) {
-            return false;
+        if(isset($this->statuses[$storeId])){
+            return $this->statuses[$storeId];
         }
+
+        if (!$this->flagDir->isExist(MaintenanceMode::FLAG_FILENAME)) {
+            $this->statuses[$storeId] = false;
+            return  $this->statuses[$storeId];
+        }
+        if(!$this->request->getUri()->isValid()){
+            $this->statuses[$storeId] = true;
+            return $this->statuses[$storeId];
+        }
+
         $info = $this->getStoreInfo();
-        return !empty($info) && in_array($storeId, $info);
+        if(empty($info)){
+            $this->statuses[$storeId] = true;
+            return $this->statuses[$storeId];
+        }
+        $this->statuses[$storeId] =  in_array($storeId, $info);
+        return  $this->statuses[$storeId];
     }
 
     /**
